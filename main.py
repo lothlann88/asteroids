@@ -28,6 +28,7 @@ def main():
         screen.fill("black")
         # Player draw
         player.draw(screen)
+        player.update(dt)
         pygame.display.flip()
         # FPS limit enforced and checked after each frame
         dt = clock.tick(60) / 1000.0
