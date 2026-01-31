@@ -1,6 +1,7 @@
 import pygame
 from constants import SCREEN_WIDTH, SCREEN_HEIGHT
 from logger import log_state
+from player import Player
 def main():
     print(f"Starting Asteroids with pygame version: {pygame.version.ver}")
     print(f"Screen width: {SCREEN_WIDTH}") 
@@ -9,24 +10,31 @@ def main():
     pygame.init()
 
 # FPS limit
-    Clock = pygame.time.Clock()
+    clock = pygame.time.Clock()
     dt = 0
 
     # Screen setup and initialization
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     running = True
+    # Player setup and initialization
+    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     # Game loop
-    while running:
+    while running == True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                return
+                running = False
         
         log_state()
         screen.fill("black")
+        # Player draw
+        player.draw(screen)
         pygame.display.flip()
         # FPS limit enforced and checked after each frame
-        dt = Clock.tick(60) / 1000.0
-        # print(f"FPS: {Clock.get_fps()}, dt: {dt}")
+        dt = clock.tick(60) / 1000.0
+
+
+
+    
 
 if __name__ == "__main__":
     main()
