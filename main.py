@@ -8,18 +8,25 @@ def main():
 
     pygame.init()
 
-    # Game loop to keep the window open
+# FPS limit
+    Clock = pygame.time.Clock()
+    dt = 0
+
+    # Screen setup and initialization
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     running = True
+    # Game loop
     while running:
-        log_state()
-        for event in pygame.event.get():
-            pass
-        screen.fill("black")
-        pygame.display.flip()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
+        
+        log_state()
+        screen.fill("black")
+        pygame.display.flip()
+        # FPS limit enforced and checked after each frame
+        dt = Clock.tick(60) / 1000.0
+        # print(f"FPS: {Clock.get_fps()}, dt: {dt}")
 
 if __name__ == "__main__":
     main()
