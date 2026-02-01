@@ -11,3 +11,6 @@ wheels/
 
 # Game state
 game_state.jsonl 
+
+#logging
+game_events.jsonl
