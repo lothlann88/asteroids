@@ -18,6 +18,8 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     dt = 0
+    background_image = pygame.image.load("Background Image.png")
+    background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
 # Sprite groups
     updatable = pygame.sprite.Group()
@@ -57,8 +59,10 @@ def main():
                     log_event("asteroid_shot")
                     shot.kill()
                     asteroid.asteroid_split()
+        # Draw background image
+        screen.blit(background_image, (0, 0))
+        #screen.fill("black")
 
-        screen.fill("black")
         # Draw sprites in drawable group    
         for obj in drawable:
             obj.draw(screen)
