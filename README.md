@@ -68,7 +68,7 @@ All game parameters can be adjusted in `constants.py`:
 # TODO
 
 - [x] Add a scoring system
-- [ ] Implement multiple lives and respawning
+- [x] Implement multiple lives and respawning
 - [ ] Add an explosion effect for the asteroids
 - [ ] Add acceleration to the player movement
 - [ ] Make the objects wrap around the screen instead of disappearing

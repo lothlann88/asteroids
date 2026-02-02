@@ -7,7 +7,7 @@ from asteroidfield import AsteroidField
 import sys
 from shot import Shot
 
-playerw = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
+player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 
 def score_for_radius(radius):
     if radius <= ASTEROID_MIN_RADIUS:
@@ -25,9 +25,13 @@ def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     dt = 0
+    # display score and lives
     score = 0
     font = pygame.font.Font(None, 36)
     score_surface = font.render(f"Score: {score}", True, "white")
+    lives = 3
+    lives_surface = font.render(f"Lives: {lives}", True, "white")
+    # load background image
     background_image = pygame.image.load("Background Image.png")
     background_image = pygame.transform.scale(background_image, (SCREEN_WIDTH, SCREEN_HEIGHT))
 
@@ -41,9 +45,9 @@ def main():
     Asteroid.containers = (asteroids,updatable,drawable)
     AsteroidField.containers = (updatable)
     Shot.containers = (shots,updatable,drawable)
-
+    # create player
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
-    
+    # create asteroid field
     AsteroidField()
 
     # Game loop
@@ -58,15 +62,31 @@ def main():
         # Update sprites in updatable group
         updatable.update(dt)
         for asteroid in asteroids:
+            # check if player collides with asteroid
             if asteroid.collides_with(player):
+                lives -= 1
+                lives_surface = font.render(f"Lives: {lives}", True, "white")
                 log_event("player_hit")
-                print("Game over!")
-                print(f"Player hit asteroid with radius {asteroid.radius}")
-                print(f"Final Score: {score}")
-
-                sys.exit()
-
+                if lives <= 0:
+                    print("Game over!")
+                    print(f"Player hit asteroid with radius {asteroid.radius}")
+                    print(f"Final Score: {score}")
+                    sys.exit()
+                else:
+                    print("Player respawned")
+                    print(f"lives remaining: {lives}")
+                    player.kill()
+                    for shot in list(shots):
+                        shot.kill()
+                    for asteroid in list(asteroids):
+                        asteroid.kill()
+                    for sprite in list(updatable):
+                        if isinstance(sprite, AsteroidField):
+                            sprite.kill()
+                    AsteroidField()
+                    player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
         for asteroid in asteroids:
+            # check if asteroid collides with shot
             for shot in shots:
                 if asteroid.collides_with(shot):
                     log_event("asteroid_shot")
@@ -83,7 +103,7 @@ def main():
         for obj in drawable:
             obj.draw(screen)
         screen.blit(score_surface, (16, 16))
-
+        screen.blit(lives_surface, (16, 48))
         pygame.display.flip()
         # FPS limit enforced and checked after each frame
         dt = clock.tick(60) / 1000.0
