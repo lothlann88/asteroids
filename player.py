@@ -3,7 +3,7 @@ from constants import PLAYER_RADIUS, LINE_WIDTH, PLAYER_TURN_SPEED, PLAYER_SPEED
 from circleshape import CircleShape
 from shot import Shot
 from constants import SHOT_RADIUS, PLAYER_SHOT_SPEED
-
+import sys
 
 class Player(CircleShape):
     def __init__(self, x, y):
