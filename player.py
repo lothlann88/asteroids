@@ -45,7 +45,7 @@ class Player(CircleShape):
                 self.shot_cooldown = self.PLAYER_SHOT_COOLDOWN_SECONDS
         if keys[pygame.K_LSHIFT]:   
             self.move(dt * 1.5)
-        if keys[pygame.ESCAPE]:
+        if keys[pygame.K_ESCAPE]:
             sys.exit()
         self.shot_cooldown -= dt
         
