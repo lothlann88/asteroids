@@ -3,7 +3,7 @@ import json
 import math
 from datetime import datetime
 
-__all__ = ["log_state", "log_event"]
+__all__ = ["log_state", "log_event", "log_leaderboard_score"]
 
 _FPS = 60
 _MAX_SECONDS = 16
@@ -13,6 +13,7 @@ _frame_count = 0
 _state_log_initialized = False
 _event_log_initialized = False
 _start_time = datetime.now()
+_LEADERBOARD_FILE = "leaderboard.jsonl"
 
 
 def log_state():
@@ -133,3 +134,44 @@ def log_event(event_type, **details):
         f.write(json.dumps(event) + "\n")
 
     _event_log_initialized = True
+
+
+def _read_current_leaderboard():
+    try:
+        with open(_LEADERBOARD_FILE, "r") as f:
+            lines = f.read().splitlines()
+    except FileNotFoundError:
+        return []
+
+    for line in reversed(lines):
+        if not line.strip():
+            continue
+        try:
+            payload = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if isinstance(payload, dict) and isinstance(payload.get("entries"), list):
+            return payload["entries"]
+    return []
+
+
+def log_leaderboard_score(name, score):
+    now = datetime.now()
+    cleaned_name = (name or "").strip() or "Player"
+    entry = {
+        "name": cleaned_name,
+        "score": int(score),
+        "timestamp": now.strftime("%Y-%m-%dT%H:%M:%S"),
+    }
+
+    entries = _read_current_leaderboard()
+    entries.append(entry)
+    entries.sort(key=lambda e: e.get("score", 0), reverse=True)
+
+    payload = {
+        "updated_at": now.strftime("%Y-%m-%dT%H:%M:%S"),
+        "entries": entries,
+    }
+
+    with open(_LEADERBOARD_FILE, "a") as f:
+        f.write(json.dumps(payload) + "\n")
